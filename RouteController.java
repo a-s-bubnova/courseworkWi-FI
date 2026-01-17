@@ -8,7 +8,7 @@ import ru.moscow.wifi.service.RouteOptimizationService;
 
 @RestController
 @RequestMapping("/api/route")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "*")
 public class RouteController {
     
     @Autowired
