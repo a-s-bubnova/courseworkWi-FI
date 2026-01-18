@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wi-Fi Маршрутизация Москва</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* Левая панель управления */
+        .sidebar {
+            width: 400px;
+            background: #f8f9fa;
+            border-right: 1px solid #dee2e6;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            background: #282c34;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .sidebar-header h1 {
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+
+        .sidebar-header p {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        .sidebar-content {
+            flex: 1;
+            padding: 20px;
+        }
+
+
+        /* Кнопки управления */
+        .controls-section {
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .btn:hover {
+            background: #0056b3;
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        /* Информация о точках */
+        .points-info {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: white;
+            border-radius: 4px;
+            border: 1px solid #dee2e6;
+        }
+
+        .points-info h3 {
+            font-size: 16px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .point-item {
+            margin-bottom: 10px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .point-item strong {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .point-item span {
+            color: #666;
+            word-break: break-all;
+        }
+
+        /* Статистика */
+        .statistics {
+            padding: 15px;
+            background: #e7f3ff;
+            border-radius: 4px;
+            border: 1px solid #b3d9ff;
+        }
+
+        .statistics h3 {
+            font-size: 16px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .stat-item {
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+
+        .stat-item strong {
+            color: #333;
+        }
+
+        .wifi-points-list {
+            margin-top: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .wifi-point-item {
+            padding: 8px;
+            margin-bottom: 5px;
+            background: white;
+            border-radius: 4px;
+            font-size: 12px;
+            border-left: 3px solid #007bff;
+        }
+
+        .wifi-point-item strong {
+            display: block;
+            color: #333;
+            margin-bottom: 3px;
+        }
+
+        .wifi-point-item .address {
+            color: #666;
+            font-size: 11px;
+        }
+
+        /* Карта */
+        .map-container {
+            flex: 1;
+            position: relative;
+        }
+
+        #map {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Сообщения */
+        .error {
+            color: #dc3545;
+            margin: 10px 0;
+            padding: 10px;
+            background: #f8d7da;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .loading {
+            color: #007bff;
+            margin: 10px 0;
+            padding: 10px;
+            background: #d1ecf1;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Радиокнопки для выбора типа маршрута */
+        input[type="radio"] {
+            cursor: pointer;
+        }
+
+        label[for], label > input[type="radio"] {
+            cursor: pointer;
+        }
+
+        /* Фильтры */
+        .filter-group {
+            font-size: 13px;
+        }
+
+        /* Легенда */
+        .legend {
+            font-size: 12px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            margin-right: 8px;
+            border: 1px solid #ddd;
+        }
+
+        /* Авторизация */
+        .auth-section {
+            padding: 25px;
+            background: white;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .auth-form {
+            width: 100%;
+        }
+        
+        .auth-form h3 {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: #333;
+            text-align: center;
+        }
+        
+        .auth-input-group {
+            margin-bottom: 16px;
+        }
+        
+        .auth-input-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #555;
+        }
+        
+        .auth-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 15px;
+            box-sizing: border-box;
+        }
+        
+        .auth-input:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
+        }
+        
+        .user-info {
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 4px;
+        }
+        
+        .user-info p {
+            margin-bottom: 12px;
+            font-size: 15px;
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Левая панель управления -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h1>Wi-Fi Маршрутизация</h1>
+            <p>Построение маршрутов через точки Wi-Fi в Москве</p>
+        </div>
+        
+        <!-- Форма авторизации/регистрации -->
+        <div id="auth-section" class="auth-section">
+            <div id="login-form" class="auth-form">
+                <h3>Вход</h3>
+                <div class="auth-input-group">
+                    <label>Имя пользователя:</label>
+                    <input type="text" id="login-username" class="auth-input" placeholder="Введите имя пользователя">
+                </div>
+                <div class="auth-input-group">
+                    <label>Пароль:</label>
+                    <input type="password" id="login-password" class="auth-input" placeholder="Введите пароль">
+                </div>
+                <button class="btn" onclick="login()">Войти</button>
+                <p style="text-align: center; margin-top: 10px; font-size: 12px;">
+                    Нет аккаунта? <a href="#" onclick="showRegisterForm(); return false;" style="color: #007bff;">Зарегистрироваться</a>
+                </p>
+            </div>
+            
+            <div id="register-form" class="auth-form" style="display: none;">
+                <h3>Регистрация</h3>
+                <div class="auth-input-group">
+                    <label>Имя пользователя:</label>
+                    <input type="text" id="register-username" class="auth-input" placeholder="Минимум 3 символа">
+                </div>
+                <div class="auth-input-group">
+                    <label>Email:</label>
+                    <input type="email" id="register-email" class="auth-input" placeholder="example@mail.com">
+                </div>
+                <div class="auth-input-group">
+                    <label>Пароль:</label>
+                    <input type="password" id="register-password" class="auth-input" placeholder="Минимум 6 символов">
+                </div>
+                <button class="btn" onclick="register()">Зарегистрироваться</button>
+                <p style="text-align: center; margin-top: 10px; font-size: 12px;">
+                    Уже есть аккаунт? <a href="#" onclick="showLoginForm(); return false;" style="color: #007bff;">Войти</a>
+                </p>
+            </div>
+            
+            <div id="user-info" class="user-info" style="display: none;">
+                <p><strong>Пользователь:</strong> <span id="current-username"></span></p>
+                <button class="btn btn-secondary" onclick="logout()">Выйти</button>
+            </div>
+        </div>
+        
+        <div class="sidebar-content" id="main-content" style="display: none;">
+            <!-- Выбор точек на карте -->
+            <div class="controls-section">
+                <h3>Выбор точек маршрута</h3>
+                <p style="font-size: 12px; color: #666; margin-bottom: 15px;">
+                    Кликните на карте, чтобы выбрать точки A и B для построения маршрута
+                </p>
+                
+                <!-- Выбор типа маршрута -->
+                <div style="margin-top: 15px; margin-bottom: 10px;">
+                    <label style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 8px; color: #555;">
+                        Тип маршрута:
+                    </label>
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                        <label style="display: flex; align-items: center; font-size: 13px; cursor: pointer;">
+                            <input type="radio" name="route-type" value="shortest" checked style="margin-right: 8px;">
+                            <span>Кратчайший путь</span>
+                        </label>
+                        <label style="display: flex; align-items: center; font-size: 13px; cursor: pointer;">
+                            <input type="radio" name="route-type" value="max_coverage" style="margin-right: 8px;">
+                            <span>Максимальное покрытие Wi-Fi</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <button class="btn" onclick="buildRoute()" id="build-route-btn" style="margin-top: 10px;">
+                    Построить маршрут
+                </button>
+                <button class="btn btn-secondary" onclick="resetRoute()" style="margin-top: 10px; width: 100%;">
+                    Сбросить маршрут
+                </button>
+            </div>
+
+            <!-- Фильтры по типам точек Wi-Fi -->
+            <div class="controls-section">
+                <h3 style="font-size: 14px; margin-bottom: 10px;">Фильтры точек Wi-Fi</h3>
+                <div class="filter-group">
+                    <label style="display: flex; align-items: center; margin-bottom: 8px; cursor: pointer;">
+                        <span class="legend-color" style="background: #51cf66; margin-right: 8px;"></span>
+                        <input type="checkbox" id="filter-park" checked style="margin-right: 8px;" onchange="applyFilters()">
+                        <span>Парки</span>
+                    </label>
+                    <label style="display: flex; align-items: center; margin-bottom: 8px; cursor: pointer;">
+                        <span class="legend-color" style="background: #ffd43b; margin-right: 8px;"></span>
+                        <input type="checkbox" id="filter-library" checked style="margin-right: 8px;" onchange="applyFilters()">
+                        <span>Библиотеки</span>
+                    </label>
+                    <label style="display: flex; align-items: center; margin-bottom: 8px; cursor: pointer;">
+                        <span class="legend-color" style="background: #ff922b; margin-right: 8px;"></span>
+                        <input type="checkbox" id="filter-cinema" checked style="margin-right: 8px;" onchange="applyFilters()">
+                        <span>Кинотеатры</span>
+                    </label>
+                    <label style="display: flex; align-items: center; margin-bottom: 8px; cursor: pointer;">
+                        <span class="legend-color" style="background: #ae3ec9; margin-right: 8px;"></span>
+                        <input type="checkbox" id="filter-cultural" checked style="margin-right: 8px;" onchange="applyFilters()">
+                        <span>Культурные центры</span>
+                    </label>
+                    <label style="display: flex; align-items: center; margin-bottom: 8px; cursor: pointer;">
+                        <span class="legend-color" style="background: #339af0; margin-right: 8px;"></span>
+                        <input type="checkbox" id="filter-city" checked style="margin-right: 8px;" onchange="applyFilters()">
+                        <span>Городской Wi-Fi</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Информация о точках -->
+            <div id="points-info" class="points-info hidden">
+                <h3>Выбранные точки</h3>
+                <div class="point-item">
+                    <strong>Точка A:</strong>
+                    <span id="point-a-coords">не выбрана</span>
+                </div>
+                <div class="point-item">
+                    <strong>Точка B:</strong>
+                    <span id="point-b-coords">не выбрана</span>
+                </div>
+            </div>
+
+            <!-- Сообщения -->
+            <div id="loading" class="loading hidden">Загрузка...</div>
+            <div id="error" class="error hidden"></div>
+
+            <!-- Статистика маршрута -->
+            <div id="statistics" class="statistics hidden">
+                <h3>Статистика маршрута</h3>
+                <div class="stat-item">
+                    <strong>Общая длина:</strong> <span id="stat-distance">-</span>
+                </div>
+                <div class="stat-item">
+                    <strong>Покрыто Wi-Fi:</strong> <span id="stat-coverage">-</span>
+                </div>
+                <div class="stat-item">
+                    <strong>Точек Wi-Fi на маршруте:</strong> <span id="stat-points">-</span>
+                </div>
+                <div id="wifi-points-list" class="wifi-points-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Карта -->
+    <div class="map-container">
+        <div id="map"></div>
+    </div>
+
+    <!-- Яндекс Карты API -->
+    <script src="https://api-maps.yandex.ru/2.1/?apikey=4133d44a-64c3-4a70-9a6f-d70999be5fb8&lang=ru_RU" type="text/javascript"></script>
+    
+    <script>
+        console.log('📄 Скрипт начал выполняться...');
+        
+        const API_KEY = '4133d44a-64c3-4a70-9a6f-d70999be5fb8';
+        const API_URL = 'http://localhost:3001/api';
+        
+        console.log('✅ Переменные инициализированы');
+        console.log('🔑 API ключ:', API_KEY ? 'установлен' : 'НЕ УСТАНОВЛЕН!');
+        
+        let map = null;
+        let wifiPoints = [];
+        let fromPoint = null;
+        let toPoint = null;
+        let routeObjects = [];
+        let routeMarkers = [];
+        let wifiMarkers = [];
+        let pointMarkersCollection = null;
+        let suggestControlA = null;
+        let suggestControlB = null;
+        let currentRouteData = null;
+        let authToken = null; // JWT токен пользователя
+        let currentUser = null; // Текущий пользователь
+
+        // Тест при загрузке страницы
+        console.log('🚀 Скрипт загружен!');
+        console.log('🔑 API ключ:', API_KEY ? 'установлен' : 'НЕ УСТАНОВЛЕН!');
+        
+        // Инициализация карты
+        ymaps.ready(function () {
+            console.log('✅ Яндекс Карты загружены');
+            
+            map = new ymaps.Map('map', {
+                center: [55.7558, 37.6173],
+                zoom: 12,
+                controls: [] // Убираем все стандартные элементы управления, включая поиск
+            });
+            
+            pointMarkersCollection = new ymaps.GeoObjectCollection();
+            map.geoObjects.add(pointMarkersCollection);
+
+            // Обработчик клика на карте
+            map.events.add('click', function (e) {
+                const coords = e.get('coords');
+                
+                if (!fromPoint) {
+                    setPointA(coords);
+                } else if (!toPoint) {
+                    setPointB(coords);
+                    // Не строим маршрут автоматически - пользователь нажмёт кнопку
+                } else {
+                    resetRoute();
+                    setPointA(coords);
+                }
+            });
+
+            // Проверяем, есть ли сохранённый токен
+            checkAuth();
+            
+            loadWifiPoints();
+        });
+        
+        // Функции авторизации
+        async function register() {
+            const username = document.getElementById('register-username').value.trim();
+            const email = document.getElementById('register-email').value.trim();
+            const password = document.getElementById('register-password').value;
+            
+            if (!username || !email || !password) {
+                showError('Заполните все поля');
+                return;
+            }
+            
+            showLoading('Регистрация...');
+            hideError();
+            
+            try {
+                const response = await fetch(`${API_URL}/auth/register`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, email, password })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    authToken = data.token;
+                    currentUser = { id: data.userId, username: data.username };
+                    localStorage.setItem('authToken', authToken);
+                    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                    
+                    showUserInfo();
+                    hideLoading();
+                    showSuccess('Регистрация успешна!');
+                } else {
+                    showError(data.message || 'Ошибка регистрации');
+                    hideLoading();
+                }
+            } catch (error) {
+                console.error('Ошибка регистрации:', error);
+                showError('Ошибка регистрации: ' + error.message);
+                hideLoading();
+            }
+        }
+        
+        async function login() {
+            const username = document.getElementById('login-username').value.trim();
+            const password = document.getElementById('login-password').value;
+            
+            if (!username || !password) {
+                showError('Заполните все поля');
+                return;
+            }
+            
+            showLoading('Вход...');
+            hideError();
+            
+            try {
+                const response = await fetch(`${API_URL}/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    authToken = data.token;
+                    currentUser = { id: data.userId, username: data.username };
+                    localStorage.setItem('authToken', authToken);
+                    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                    
+                    showUserInfo();
+                    hideLoading();
+                    showSuccess('Вход выполнен успешно!');
+                } else {
+                    showError(data.message || 'Ошибка входа');
+                    hideLoading();
+                }
+            } catch (error) {
+                console.error('Ошибка входа:', error);
+                showError('Ошибка входа: ' + error.message);
+                hideLoading();
+            }
+        }
+        
+        function logout() {
+            authToken = null;
+            currentUser = null;
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('currentUser');
+            
+            showLoginForm();
+        }
+        
+        function showLoginForm() {
+            document.getElementById('login-form').style.display = 'block';
+            document.getElementById('register-form').style.display = 'none';
+            document.getElementById('user-info').style.display = 'none';
+            document.getElementById('main-content').style.display = 'none';
+        }
+        
+        function showRegisterForm() {
+            document.getElementById('login-form').style.display = 'none';
+            document.getElementById('register-form').style.display = 'block';
+            document.getElementById('user-info').style.display = 'none';
+            document.getElementById('main-content').style.display = 'none';
+        }
+        
+        function showUserInfo() {
+            document.getElementById('login-form').style.display = 'none';
+            document.getElementById('register-form').style.display = 'none';
+            document.getElementById('user-info').style.display = 'block';
+            document.getElementById('main-content').style.display = 'block';
+            
+            if (currentUser) {
+                document.getElementById('current-username').textContent = currentUser.username;
+            }
+        }
+        
+        async function checkAuth() {
+            const savedToken = localStorage.getItem('authToken');
+            const savedUser = localStorage.getItem('currentUser');
+            
+            if (savedToken && savedUser) {
+                try {
+                    const response = await fetch(`${API_URL}/auth/validate`, {
+                        headers: {
+                            'Authorization': `Bearer ${savedToken}`
+                        }
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        authToken = savedToken;
+                        currentUser = JSON.parse(savedUser);
+                        showUserInfo();
+                    } else {
+                        // Токен невалиден, очищаем
+                        localStorage.removeItem('authToken');
+                        localStorage.removeItem('currentUser');
+                        showLoginForm();
+                    }
+                } catch (error) {
+                    console.error('Ошибка проверки токена:', error);
+                    showLoginForm();
+                }
+            } else {
+                showLoginForm();
+            }
+        }
+        
+        function showSuccess(message) {
+            const errorDiv = document.getElementById('error');
+            errorDiv.textContent = message;
+            errorDiv.style.color = '#28a745';
+            errorDiv.style.background = '#d4edda';
+            errorDiv.style.borderColor = '#c3e6cb';
+            errorDiv.classList.remove('hidden');
+            
+            setTimeout(() => {
+                errorDiv.classList.add('hidden');
+            }, 3000);
+        }
+
+        // Установить точку A
+        function setPointA(coords, address) {
+            fromPoint = coords;
+            addRouteMarker(coords, 'A', '#FF0000');
+            updatePointInfo();
+            map.setCenter(coords, 15);
+        }
+
+        // Установить точку B
+        function setPointB(coords, address) {
+            toPoint = coords;
+            addRouteMarker(coords, 'B', '#FF69B4');
+            updatePointInfo();
+            // Не строим маршрут автоматически - пользователь нажмёт кнопку
+        }
+
+        // Загрузка точек Wi-Fi
+        async function loadWifiPoints() {
+            showLoading('Загрузка точек Wi-Fi...');
+            hideError();
+
+            try {
+                const response = await fetch(`${API_URL}/wifi-points`);
+                const data = await response.json();
+
+                if (data.success && data.data) {
+                    wifiPoints = data.data;
+                    visualizeWifiPoints(wifiPoints);
+                    hideLoading();
+                    console.log(`✅ Загружено ${wifiPoints.length} точек Wi-Fi`);
+                } else {
+                    throw new Error('Неожиданный формат ответа');
+                }
+            } catch (error) {
+                console.error('Ошибка загрузки точек:', error);
+                showError('Не удалось загрузить точки Wi-Fi. Проверьте, что backend запущен на http://localhost:3001');
+                hideLoading();
+            }
+        }
+
+        let isFirstLoad = true;
+
+        // Применить фильтры по типам точек Wi-Fi
+        function applyFilters() {
+            if (wifiPoints.length === 0) return;
+            
+            const filters = {
+                park: document.getElementById('filter-park').checked,
+                library: document.getElementById('filter-library').checked,
+                cinema: document.getElementById('filter-cinema').checked,
+                cultural_center: document.getElementById('filter-cultural').checked,
+                city_wifi: document.getElementById('filter-city').checked
+            };
+            
+            // Фильтруем точки по выбранным типам
+            const filteredPoints = wifiPoints.filter(point => {
+                return filters[point.type] !== false;
+            });
+            
+            console.log(`Фильтрация: показано ${filteredPoints.length} из ${wifiPoints.length} точек`);
+            visualizeWifiPoints(filteredPoints);
+        }
+
+        function visualizeWifiPoints(points) {
+            if (!map) return;
+
+            wifiMarkers.forEach(marker => {
+                map.geoObjects.remove(marker);
+            });
+            wifiMarkers = [];
+
+            points.forEach(point => {
+                const marker = new ymaps.Placemark(
+                    [point.lat, point.lng],
+                    {
+                        balloonContent: `
+                            <strong>${point.name}</strong><br/>
+                            Тип: ${getTypeName(point.type)}<br/>
+                            Адрес: ${point.address || 'Не указан'}
+                        `,
+                        iconCaption: point.name
+                    },
+                    {
+                        preset: getIconPreset(point.type),
+                        iconColor: getIconColor(point.type)
+                    }
+                );
+
+                map.geoObjects.add(marker);
+                wifiMarkers.push(marker);
+            });
+
+            if (isFirstLoad && points.length > 0) {
+                isFirstLoad = false;
+                const bounds = map.geoObjects.getBounds();
+                if (bounds) {
+                    map.setBounds(bounds, { duration: 500, checkZoomRange: true });
+                }
+            }
+        }
+        
+        // Получить название типа на русском
+        function getTypeName(type) {
+            const names = {
+                park: 'Парк',
+                library: 'Библиотека',
+                cinema: 'Кинотеатр',
+                cultural_center: 'Культурный центр',
+                city_wifi: 'Городской Wi-Fi'
+            };
+            return names[type] || type;
+        }
+
+        function getIconPreset(type) {
+            const presets = {
+                library: 'islands#blueLibraryIcon',
+                cinema: 'islands#redCinemaIcon',
+                park: 'islands#greenParkIcon',
+                cultural_center: 'islands#orangeCultureIcon',
+                city_wifi: 'islands#blueDotIcon'
+            };
+            return presets[type] || 'islands#blueDotIcon';
+        }
+
+        function getIconColor(type) {
+            const colors = {
+                library: '#ffd43b', // Жёлтый для библиотек
+                cinema: '#ff922b', // Оранжевый для кинотеатров
+                park: '#51cf66', // Зелёный для парков
+                cultural_center: '#ae3ec9', // Фиолетовый для культурных центров
+                city_wifi: '#339af0' // Синий для городского Wi-Fi
+            };
+            return colors[type] || '#339af0';
+        }
+
+        function addRouteMarker(coords, label, color) {
+            if (!map || !pointMarkersCollection) return;
+
+            // Удаляем старый маркер, если он уже есть
+            const existingMarker = routeMarkers.find(m => {
+                const markerLabel = m.properties.get('label');
+                return markerLabel === label;
+            });
+            if (existingMarker) {
+                pointMarkersCollection.remove(existingMarker);
+                const index = routeMarkers.indexOf(existingMarker);
+                if (index > -1) {
+                    routeMarkers.splice(index, 1);
+                }
+            }
+
+            // Определяем цвета: красное с белым для A, черное с белым для B
+            const outerColor = label === 'A' ? '#FF0000' : '#000000';
+            const innerColor = '#FFFFFF';
+            
+            // Создаём маркер с цветной обводкой и белой заливкой
+            const marker = new ymaps.Placemark(
+                coords,
+                { 
+                    balloonContent: `Точка ${label}`,
+                    label: label
+                },
+                {
+                    iconLayout: 'default#imageWithContent',
+                    iconImageHref: 'data:image/svg+xml;base64,' + btoa(
+                        '<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30">' +
+                        '<circle cx="15" cy="15" r="14" fill="' + outerColor + '" stroke="' + outerColor + '" stroke-width="2"/>' +
+                        '<circle cx="15" cy="15" r="10" fill="' + innerColor + '"/>' +
+                        '</svg>'
+                    ),
+                    iconImageSize: [30, 30],
+                    iconImageOffset: [-15, -15]
+                }
+            );
+
+            pointMarkersCollection.add(marker);
+            routeMarkers.push(marker);
+        }
+
+        function updatePointInfo() {
+            const infoDiv = document.getElementById('points-info');
+            const pointA = document.getElementById('point-a-coords');
+            const pointB = document.getElementById('point-b-coords');
+
+            if (fromPoint || toPoint) {
+                infoDiv.classList.remove('hidden');
+                pointA.textContent = fromPoint ? `${fromPoint[0].toFixed(6)}, ${fromPoint[1].toFixed(6)}` : 'не выбрана';
+                pointB.textContent = toPoint ? `${toPoint[0].toFixed(6)}, ${toPoint[1].toFixed(6)}` : 'не выбрана';
+            } else {
+                infoDiv.classList.add('hidden');
+            }
+        }
+
+        async function buildRoute() {
+            if (!fromPoint || !toPoint) {
+                showError('Выберите обе точки (A и B) для построения маршрута');
+                return;
+            }
+
+            // Обновляем состояние кнопки
+            const buildBtn = document.getElementById('build-route-btn');
+            buildBtn.disabled = true;
+            buildBtn.textContent = 'Построение маршрута...';
+
+            showLoading('Построение маршрута...');
+            hideError();
+            hideStatistics();
+
+            // Получаем выбранный тип маршрута
+            const routeTypeInput = document.querySelector('input[name="route-type"]:checked');
+            const routeType = routeTypeInput ? routeTypeInput.value : 'max_coverage';
+            
+            console.log('Тип маршрута:', routeType);
+
+            try {
+                const url = `${API_URL}/route?from_lat=${fromPoint[0]}&from_lng=${fromPoint[1]}&to_lat=${toPoint[0]}&to_lng=${toPoint[1]}&route_type=${routeType}`;
+                console.log('Запрос маршрута:', url);
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if (data.success) {
+                    currentRouteData = data;
+                    console.log('Данные маршрута:', data);
+                    console.log('Зоны покрытия:', data.coverageZones || data.coverage_zones);
+                    visualizeRoute(data);
+                    showStatistics(data.statistics, data.coverageZones || data.coverage_zones);
+                    hideLoading();
+                } else {
+                    throw new Error(data.message || 'Ошибка построения маршрута');
+                }
+            } catch (error) {
+                console.error('Ошибка построения маршрута:', error);
+                showError('Не удалось построить маршрут: ' + error.message);
+                hideLoading();
+            } finally {
+                // Восстанавливаем кнопку
+                const buildBtn = document.getElementById('build-route-btn');
+                buildBtn.disabled = false;
+                buildBtn.textContent = 'Построить маршрут';
+            }
+        }
+
+        function visualizeRoute(routeData) {
+            if (!map) return;
+
+            routeObjects.forEach(obj => {
+                map.geoObjects.remove(obj);
+            });
+            routeObjects = [];
+
+            const zones = routeData.coverageZones || routeData.coverage_zones;
+            if (zones) {
+                zones.forEach(zone => {
+                    const lat = zone.lat || (zone.center && zone.center.lat);
+                    const lng = zone.lng || (zone.center && zone.center.lng);
+                    const radius = zone.radius || 50;
+                    
+                    if (lat && lng) {
+                        const circle = new ymaps.Circle(
+                            [[lat, lng], radius],
+                            {},
+                            {
+                                fillColor: '#0088FF',
+                                fillOpacity: 0.2,
+                                strokeColor: '#0088FF',
+                                strokeWidth: 2
+                            }
+                        );
+                        map.geoObjects.add(circle);
+                        routeObjects.push(circle);
+                    }
+                });
+            }
+
+            if (routeData.route) {
+                const routeCoordinates = routeData.route.map(coord => {
+                    if (Array.isArray(coord)) {
+                        return coord;
+                    } else if (coord.lat && coord.lng) {
+                        return [coord.lat, coord.lng];
+                    } else {
+                        return [coord[0], coord[1]];
+                    }
+                });
+
+                const polyline = new ymaps.Polyline(
+                    routeCoordinates,
+                    {},
+                    {
+                        strokeColor: '#FF0000',
+                        strokeWidth: 4,
+                        strokeOpacity: 0.7
+                    }
+                );
+                map.geoObjects.add(polyline);
+                routeObjects.push(polyline);
+
+                try {
+                    const bounds = map.geoObjects.getBounds();
+                    if (bounds) {
+                        const currentBounds = map.getBounds();
+                        const needsZoom = !currentBounds || 
+                                        !currentBounds.contains(bounds[0]) || 
+                                        !currentBounds.contains(bounds[1]);
+                        
+                        if (needsZoom) {
+                            map.setBounds(bounds, {
+                                duration: 800,
+                                checkZoomRange: true,
+                                zoomMargin: 50
+                            });
+                        }
+                    }
+                } catch (e) {
+                    console.warn('Не удалось установить границы карты:', e);
+                }
+            }
+        }
+
+        function showStatistics(stats, coverageZones) {
+            if (!stats) return;
+
+            const statsDiv = document.getElementById('statistics');
+            const statDistance = document.getElementById('stat-distance');
+            const statCoverage = document.getElementById('stat-coverage');
+            const statPoints = document.getElementById('stat-points');
+            const wifiPointsList = document.getElementById('wifi-points-list');
+
+            statsDiv.classList.remove('hidden');
+            
+            const totalDistance = stats.totalDistanceMeters || stats.total_distance_meters || 0;
+            const coverage = stats.coveragePercentage || stats.coverage_percentage || 0;
+            const wifiPointsCount = stats.wifiPointsAlongRoute || stats.wifi_points_along_route || 0;
+            
+            statDistance.textContent = `${totalDistance} м`;
+            statCoverage.textContent = `${coverage.toFixed(1)}%`;
+            statPoints.textContent = wifiPointsCount;
+
+            // Показываем список точек Wi-Fi
+            wifiPointsList.innerHTML = '';
+            if (coverageZones && coverageZones.length > 0) {
+                console.log('Зоны покрытия (полные данные):', JSON.stringify(coverageZones, null, 2));
+                
+                coverageZones.forEach((zone, index) => {
+                    console.log(`Зона ${index}:`, zone);
+                    
+                    // Проверяем разные возможные форматы данных (camelCase и snake_case)
+                    let name = zone.name || zone.Name || zone.wifiPointName || null;
+                    let address = zone.address || zone.Address || zone.wifiPointAddress || null;
+                    const type = zone.type || zone.Type || 'unknown';
+                    
+                    // Если name или address не найдены, пытаемся найти точку Wi-Fi по ID
+                    if (!name || !address) {
+                        const wifiPointId = zone.wifiPointId || zone.wifi_point_id || zone.id;
+                        if (wifiPointId && wifiPoints.length > 0) {
+                            const wifiPoint = wifiPoints.find(p => p.id === wifiPointId);
+                            if (wifiPoint) {
+                                name = name || wifiPoint.name || 'Не указано';
+                                address = address || wifiPoint.address || 'Адрес не указан';
+                                console.log(`Найдена точка Wi-Fi по ID ${wifiPointId}:`, wifiPoint);
+                            }
+                        }
+                    }
+                    
+                    // Если всё ещё нет данных, используем значения по умолчанию
+                    name = name || 'Не указано';
+                    address = address || 'Адрес не указан';
+                    
+                    console.log(`Отображаем точку ${index}:`, { name, address, type });
+                    
+                    const item = document.createElement('div');
+                    item.className = 'wifi-point-item';
+                    item.innerHTML = `
+                        <strong>${name}</strong>
+                        <div class="address">${address}</div>
+                    `;
+                    wifiPointsList.appendChild(item);
+                });
+            } else {
+                console.log('Зоны покрытия пусты или не найдены');
+                wifiPointsList.innerHTML = '<div style="padding: 10px; color: #666; font-size: 12px;">Точки Wi-Fi не найдены</div>';
+            }
+        }
+
+        function resetRoute() {
+            fromPoint = null;
+            toPoint = null;
+            currentRouteData = null;
+
+            if (pointMarkersCollection) {
+                pointMarkersCollection.removeAll();
+            }
+            routeMarkers = [];
+
+            routeObjects.forEach(obj => {
+                map.geoObjects.remove(obj);
+            });
+            routeObjects = [];
+
+            updatePointInfo();
+            hideStatistics();
+            hideError();
+
+            // НЕ перезагружаем точки Wi-Fi - они остаются на карте
+            // Это экономит время и не мешает пользователю
+        }
+
+        function showLoading(message) {
+            const loadingDiv = document.getElementById('loading');
+            loadingDiv.textContent = message || 'Загрузка...';
+            loadingDiv.classList.remove('hidden');
+        }
+
+        function hideLoading() {
+            document.getElementById('loading').classList.add('hidden');
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('error');
+            errorDiv.textContent = message;
+            errorDiv.classList.remove('hidden');
+        }
+
+        function hideError() {
+            document.getElementById('error').classList.add('hidden');
+        }
+
+        function hideStatistics() {
+            document.getElementById('statistics').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
